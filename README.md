@@ -1,3 +1,6 @@
+# Docker Hub Repository link
+https://hub.docker.com/repository/docker/dbal7/is601_assignment14/general
+
 # Setup
 
 ## Directory Setup
@@ -117,10 +120,26 @@ cache-from: type=registry,ref=dbal7/is601_assignment14:cache
 docker compose ps
 ```
 
+### Build new docker image
+```bash
+docker compose --build
+# Use -d at end to run in background
+```
+
+### Tag docker to docker hub repo
+```bash
+docker tag assignment14-web:latest dbal7/is601_assignment14:latest
+```
+
+### Push to docker
+```bash
+docker push dbal7/is601_assignment14:latest
+```
+
 
 # Issues and Fixes
 
-## Dependency version issue
+## Dependency version issue 
 
 ### Update dependency versions in requirements.txt
 ```bash
@@ -137,10 +156,17 @@ typing-extensions==4.12.2 --> 4.13.2
 urllib3==2.3.0 --> 2.7.0
 ```
 
-### Fix other dependency issues in Dockerfile
-**Remove part of code in line 16**
+### Update code in Dockerfile to fix trivy security issues with dependencies (Unable to fix)
 ```bash
-\ setuptools>=70.0.0 wheel
+COPY requirements.txt .
+
+RUN python -m pip install --no-cache-dir -r requirements.txt && \
+    python -m pip check && \
+    python -m pip show \
+        jaraco.context \
+        msgpack \
+        setuptools \
+        wheel
 ```
 
 ### Add to requirements.txt
@@ -154,4 +180,27 @@ wheel==0.46.2
 **Run to update versions**
 ```bash
 pip install --upgrade -r requirements.txt
+```
+
+**Issue keeps persisting, do not know how to fix**
+
+
+## Internal server error when going to web app
+
+### Change code for return remplates for get requests in main.py
+```bash
+# For index
+return templates.TemplateResponse(
+   request=request,
+   name="index.html",
+)
+...
+
+# For view calculation
+return templates.TemplateResponse(
+   request=request,
+   name="view_calculation.html",
+   context={"calc_id": calc_id},
+)
+...
 ```
