@@ -13,7 +13,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and essential Python tools
-RUN python -m pip install --upgrade pip setuptools>=70.0.0 wheel
+RUN python -m pip install --upgrade pip
 
 # Create non-root user
 RUN groupadd -r appgroup && \
