@@ -21,7 +21,14 @@ RUN groupadd -r appgroup && \
 
 # Copy dependencies and install them
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
+RUN python -m pip install --no-cache-dir -r requirements.txt && \
+    python -m pip check && \
+    python -m pip show \
+        jaraco.context \
+        msgpack \
+        setuptools \
+        wheel
 
 # Copy application code
 COPY . .
